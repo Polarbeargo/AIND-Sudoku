@@ -91,6 +91,7 @@ def assign_value(values, box, value):
         history[values2grid(values)] = (prev, (box, value))
     return values
 
+
 def cross(A, B):
     """Cross product of elements in A and elements in B """
     return [x+y for x in A for y in B]
@@ -107,7 +108,7 @@ def values2grid(values):
     Returns
     -------
     a string representing a sudoku grid.
-        
+
         Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     """
     res = []
@@ -125,9 +126,9 @@ def grid2values(grid):
     ----------
     grid(string)
         a string representing a sudoku grid.
-        
+
         Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    
+
     Returns
     -------
         A grid in dictionary form
@@ -156,7 +157,8 @@ def display(values):
     for r in rows:
         print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
                       for c in cols))
-        if r in 'CF': print(line)
+        if r in 'CF':
+            print(line)
     print()
 
 
