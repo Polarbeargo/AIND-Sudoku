@@ -1,19 +1,50 @@
 from utils import *
+import itertools
 
+rows = 'ABCDEFGHI'
+cols = '123456789'
+
+def cross(a, b):
+    # Cross product of elements in A and elements in B
+    return [s+t for s in a for t in b]
+
+boxes = cross(rows, cols)
+
+# row_units[0] = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+# This is the top most row.
 row_units = [cross(r, cols) for r in rows]
+
+# column_units[0] = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1']
+# This is the left most column.
 column_units = [cross(rows, c) for c in cols]
+
+# square_units[0] = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
+# This is the top left square
 square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
                 for cs in ('123', '456', '789')]
-unitlist = row_units + column_units + square_units
+
+diag_units = [[rows[i] + cols[i] for i in range(9)], [rows[::-1][i] + cols[i] for i in range(9)]]
+unitlist = row_units + column_units + square_units + diag_units
 
 # TODO: Update the unit list to add the new diagonal units
-unitlist = unitlist
+units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
+assignments = []
+
+def assign_value(values, box, value):
+    """
+    Please use this function to update your values dictionary!
+    Assigns a value to a given box. If it updates the board record it.
+    """
+    values[box] = value
+    if len(value) == 1:
+        assignments.append(values.copy())
+    return values
 
 # Must be called after all units (including diagonals) are added to the unitlist
 units = extract_units(unitlist, boxes)
 peers = extract_peers(units, boxes)
-
 
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
@@ -43,7 +74,22 @@ def naked_twins(values):
     strategy repeatedly).
     """
     # TODO: Implement this function!
-    raise NotImplementedError
+    for unit in unitlist:
+        # Find all boxes with two digits remaining as possibilities
+        pairs = [box for box in unit if len(values[box]) == 2]
+        # Pairwise combinations
+        poss_twins = [list(pair) for pair in itertools.combinations(pairs, 2)]
+        for pair in poss_twins:
+            box1 = pair[0]
+            box2 = pair[1]
+            # Find the naked twins
+            if values[box1] == values[box2]:
+                for box in unit:
+                    # Eliminate the naked twins as possibilities for peers
+                    if box != box1 and box != box2:
+                        for digit in values[box1]:
+                            values[box] = values[box].replace(digit,'')
+    return values
 
 
 def eliminate(values):
