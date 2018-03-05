@@ -1,6 +1,5 @@
 from utils import *
 
-
 def search(values):
     "Using depth-first search and propagation, try all possible values."
     # First, reduce the puzzle using the previous function
