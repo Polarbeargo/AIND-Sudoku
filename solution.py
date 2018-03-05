@@ -63,7 +63,15 @@ def eliminate(values):
         The values dictionary with the assigned values eliminated from peers
     """
     # TODO: Copy your code from the classroom to complete this function
-    raise NotImplementedError
+    grids = []
+    all_digits = '123456789'
+    for c in values:
+        if c == '.':
+            values.append(all_digits)
+        elif c in all_digits:
+            grids.append(c)
+    assert len(grids) == 81
+    return dict(zip(boxes, grids))
 
 
 def only_choice(values):
@@ -128,7 +136,20 @@ def search(values):
     and extending it to call the naked twins strategy.
     """
     # TODO: Copy your code from the classroom to complete this function
-    raise NotImplementedError
+    values = reduce_puzzle(values)
+    if values is False:
+        return False  # Failed earlier
+    if all(len(values[s]) == 1 for s in boxes):
+        return values  # Solved!
+    # Choose one of the unfilled squares with the fewest possibilities
+    n, s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    # Now use recurrence to solve each one of the resulting sudokus, and
+    for value in values[s]:
+        new_sudoku = values.copy()
+        new_sudoku[s] = value
+        attempt = search(new_sudoku)
+        if attempt:
+            return attempt
 
 
 def solve(grid):
