@@ -4,11 +4,9 @@ import itertools
 rows = 'ABCDEFGHI'
 cols = '123456789'
 
-
 def cross(a, b):
     # Cross product of elements in A and elements in B
     return [s+t for s in a for t in b]
-
 
 boxes = cross(rows, cols)
 
@@ -169,13 +167,15 @@ def reduce_puzzle(values):
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
-        solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+        solved_values_before = len(
+            [box for box in values.keys() if len(values[box]) == 1])
         # Use the Eliminate Strategy
         values = eliminate(values)
         # Use the Only Choice Strategy
         values = only_choice(values)
         # Check how many boxes have a determined value, to compare
-        solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
+        solved_values_after = len(
+            [box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop.
         stalled = solved_values_before == solved_values_after
         # Sanity check, return False if there is a box with zero available values:
@@ -218,7 +218,6 @@ def search(values):
         if attempt:
             return attempt
 
-
 def solve(grid):
     """Find the solution to a Sudoku puzzle using search and constraint propagation
 
@@ -237,7 +236,6 @@ def solve(grid):
     values = grid2values(grid)
     values = search(values)
     return values
-
 
 if __name__ == "__main__":
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
