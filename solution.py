@@ -4,9 +4,11 @@ import itertools
 rows = 'ABCDEFGHI'
 cols = '123456789'
 
+
 def cross(a, b):
     # Cross product of elements in A and elements in B
     return [s+t for s in a for t in b]
+
 
 boxes = cross(rows, cols)
 
@@ -23,12 +25,13 @@ column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
                 for cs in ('123', '456', '789')]
 
-diag_units = [[rows[i] + cols[i] for i in range(9)], [rows[::-1][i] + cols[i] for i in range(9)]]
+diag_units = [[rows[i] + cols[i]
+               for i in range(9)], [rows[::-1][i] + cols[i] for i in range(9)]]
 unitlist = row_units + column_units + square_units + diag_units
 
 # TODO: Update the unit list to add the new diagonal units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+peers = dict((s, set(sum(units[s], []))-set([s])) for s in boxes)
 
 assignments = []
 
@@ -88,9 +91,8 @@ def naked_twins(values):
                     # Eliminate the naked twins as possibilities for peers
                     if box != box1 and box != box2:
                         for digit in values[box1]:
-                            values[box] = values[box].replace(digit,'')
+                            values[box] = values[box].replace(digit, '')
     return values
-
 
 def eliminate(values):
     """Apply the eliminate strategy to a Sudoku puzzle
@@ -119,7 +121,6 @@ def eliminate(values):
     assert len(grids) == 81
     return dict(zip(boxes, grids))
 
-
 def only_choice(values):
     """Apply the only choice strategy to a Sudoku puzzle
 
@@ -143,7 +144,6 @@ def only_choice(values):
     # TODO: Copy your code from the classroom to complete this function
     raise NotImplementedError
 
-
 def reduce_puzzle(values):
     """Reduce a Sudoku puzzle by repeatedly applying all constraint strategies
 
@@ -158,9 +158,30 @@ def reduce_puzzle(values):
         The values dictionary after continued application of the constraint strategies
         no longer produces any changes, or False if the puzzle is unsolvable 
     """
-    # TODO: Copy your code from the classroom and modify it to complete this function
-    raise NotImplementedError
-
+    # TODO:
+    """
+    Iterate eliminate() and only_choice(). If at some point, there is a box with no available values, return False.
+    If the sudoku is solved, return the sudoku.
+    If after an iteration of both functions, the sudoku remains the same, return the sudoku.
+    Input: A sudoku in dictionary form.
+    Output: The resulting sudoku in dictionary form.
+    """
+    stalled = False
+    while not stalled:
+        # Check how many boxes have a determined value
+        solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+        # Use the Eliminate Strategy
+        values = eliminate(values)
+        # Use the Only Choice Strategy
+        values = only_choice(values)
+        # Check how many boxes have a determined value, to compare
+        solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
+        # If no new values were added, stop the loop.
+        stalled = solved_values_before == solved_values_after
+        # Sanity check, return False if there is a box with zero available values:
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            return False
+    return values
 
 def search(values):
     """Apply depth first search to solve Sudoku puzzles in order to solve puzzles
