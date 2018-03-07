@@ -1,12 +1,13 @@
-from utils import *
+from utils import display, grid2values
 import itertools
 
-rows = 'ABCDEFGHI'
-cols = '123456789'
 
 def cross(a, b):
     # Cross product of elements in A and elements in B
     return [s+t for s in a for t in b]
+
+rows = 'ABCDEFGHI'
+cols = '123456789'
 
 boxes = cross(rows, cols)
 
@@ -44,8 +45,8 @@ def assign_value(values, box, value):
     return values
 
 # Must be called after all units (including diagonals) are added to the unitlist
-units = extract_units(unitlist, boxes)
-peers = extract_peers(units, boxes)
+# units = extract_units(unitlist, boxes)
+# peers = extract_peers(units, boxes)
 
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
@@ -108,7 +109,7 @@ def eliminate(values):
     dict
         The values dictionary with the assigned values eliminated from peers
     """
-    # TODO: Copy your code from the classroom to complete this function
+    # TODO:
     grids = []
     all_digits = '123456789'
     for c in values:
@@ -139,8 +140,21 @@ def only_choice(values):
     -----
     You should be able to complete this function by copying your code from the classroom
     """
-    # TODO: Copy your code from the classroom to complete this function
-    raise NotImplementedError
+    # TODO:
+    """Finalize all values that are the only choice for a unit.
+
+    Go through all the units, and whenever there is a unit with a value
+    that only fits in one box, assign the value to this box.
+
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after filling in only choices.
+    """
+    for unit in unitlist:
+        for digit in '123456789':
+            dplaces = [box for box in unit if digit in values[box]]
+            if len(dplaces) == 1:
+                values[dplaces[0]] = digit
+    return values
 
 def reduce_puzzle(values):
     """Reduce a Sudoku puzzle by repeatedly applying all constraint strategies
@@ -236,6 +250,7 @@ def solve(grid):
     values = grid2values(grid)
     values = search(values)
     return values
+
 
 if __name__ == "__main__":
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
