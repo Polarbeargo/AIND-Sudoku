@@ -1,12 +1,14 @@
 import sys, os, random, pygame
 sys.path.append(os.path.join("objects"))
 import SudokuSquare
-from utils import *
 from GameResources import *
+#from utils import *
 
+digits = '123456789'
+rows = 'ABCDEFGHI'
 
 def play(values, result, history):
-    assignments = reconstruct(result, history)
+    #assignments = reconstruct(result, history)
     pygame.init()
 
     size = width, height = 700, 700
@@ -27,7 +29,8 @@ def play(values, result, history):
                 if x in (0, 1, 2):  startX = (x * 57) + 38
                 if x in (3, 4, 5):  startX = (x * 57) + 99
                 if x in (6, 7, 8):  startX = (x * 57) + 159
-
+                cols = digits[x]
+                row = rows[y]
                 if y in (0, 1, 2):  startY = (y * 57) + 35
                 if y in (3, 4, 5):  startY = (y * 57) + 100
                 if y in (6, 7, 8):  startY = (y * 57) + 165
@@ -46,9 +49,9 @@ def play(values, result, history):
         pygame.display.update()
         clock.tick(5)
 
-        if len(assignments) == 0:
+        if len(string_number) == 0:
             break
-        box, value = assignments.pop()
+        box, value = string_number.pop()
         values[box] = value
 
     # leave game showing until closed by user

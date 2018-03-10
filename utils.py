@@ -116,7 +116,6 @@ def values2grid(values):
             res.append(v if len(v) == 1 else '.')
     return ''.join(res)
 
-
 def grid2values(grid):
     """Convert grid into a dict of {square: char} with '123456789' for empties.
 
