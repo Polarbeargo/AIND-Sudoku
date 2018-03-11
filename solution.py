@@ -109,16 +109,17 @@ def eliminate(values):
     dict
         The values dictionary with the assigned values eliminated from peers
     """
-    # TODO:
-    grids = []
-    all_digits = '123456789'
-    for c in values:
-        if c == '.':
-            values.append(all_digits)
-        elif c in all_digits:
-            grids.append(c)
-    assert len(grids) == 81
-    return dict(zip(boxes, grids))
+    # TODO:  Take values as an input of the sudoku as dictionary form,
+    # run through all the boxes, applying the eliminate strategy,
+    # and return the resulting sudoku values into dictionary.
+    solved_values = [box for box in values.keys() if len(values[box]) == 1]
+
+    for solved_val in solved_values:
+        digit = values[solved_val]
+        peers_solv = peers[solved_val]
+        for peer in peers_solv:
+            values = assign_value(values, peer, values[peer].replace(digit,''))
+    return values
 
 def only_choice(values):
     """Apply the only choice strategy to a Sudoku puzzle
